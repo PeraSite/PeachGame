@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -69,11 +71,13 @@ public class PeachSelector : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
 	public void OnEndDrag(PointerEventData eventData) {
 		_selectBoxImage.gameObject.SetActive(false);
 
-		foreach (var peach in _peaches) {
-			var peachPosition = peach.transform.position;
-			if (_selectRect.Contains(peachPosition)) {
-				peach.Delete();
-			}
+		var selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position)).ToList();
+		var number = selectedPeaches.Sum(x => x.Number);
+
+		if (number == 10) {
+			selectedPeaches.ForEach(x => x.Delete());
+		} else {
+			selectedPeaches.ForEach(x => x.Deselect());
 		}
 	}
 }

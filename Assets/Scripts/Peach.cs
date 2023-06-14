@@ -16,12 +16,15 @@ public class Peach : MonoBehaviour {
 
 	private bool _isSelected;
 
+	public int Number { get; private set; }
+
 	private void Awake() {
 		_canvasGroup = GetComponent<CanvasGroup>();
 	}
 
 	public void Init(int number) {
 		_numberText.text = number.ToString();
+		Number = number;
 	}
 
 	public void Select() {
