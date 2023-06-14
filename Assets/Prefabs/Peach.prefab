@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2223550602330852093}
   - component: {fileID: 2223550602330852066}
   - component: {fileID: -1427295703653550195}
+  - component: {fileID: 4332665127159475477}
   m_Layer: 5
   m_Name: Peach
   m_TagString: Untagged
@@ -94,6 +95,18 @@ MonoBehaviour:
   _peachImage: {fileID: 2223550602330852066}
   _defaultSprite: {fileID: 21300000, guid: 3bf43807aa70e3248bf80bc2745b7d74, type: 3}
   _selectedSprite: {fileID: 21300000, guid: 94330a519e01e8a439871fbb94df46bf, type: 3}
+--- !u!225 &4332665127159475477
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2223550602330852064}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7495489725977556463
 GameObject:
   m_ObjectHideFlags: 0

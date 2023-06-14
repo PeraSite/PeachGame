@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,12 +8,17 @@ public class Peach : MonoBehaviour {
 	[Title("Components")]
 	[SerializeField] private TextMeshProUGUI _numberText;
 	[SerializeField] private Image _peachImage;
+	private CanvasGroup _canvasGroup;
 
 	[Title("Sprites")]
 	[SerializeField] private Sprite _defaultSprite;
 	[SerializeField] private Sprite _selectedSprite;
 
 	private bool _isSelected;
+
+	private void Awake() {
+		_canvasGroup = GetComponent<CanvasGroup>();
+	}
 
 	public void Init(int number) {
 		_numberText.text = number.ToString();
@@ -32,6 +38,6 @@ public class Peach : MonoBehaviour {
 	}
 
 	public void Delete() {
-		gameObject.SetActive(false);
+		_canvasGroup.alpha = 0f;
 	}
 }
