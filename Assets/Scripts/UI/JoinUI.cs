@@ -27,6 +27,7 @@ namespace PeachGame.Client.UI {
 		}
 
 		public void Handle(ServerPongPacket packet) {
+			NetworkManager.Instance.Nickname = _inputField.text;
 			NetworkManager.Instance.ClientId = packet.ClientId;
 			SceneManager.LoadScene("RoomList");
 		}

@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using Cysharp.Threading.Tasks;
 using PeachGame.Common.Packets;
 using PeachGame.Common.Packets.Client;
-using PeachGame.Common.Packets.Server;
 using PeachGame.Common.Serialization;
 using UnityEngine;
 
@@ -73,7 +72,11 @@ namespace PeachGame.Client {
 		}
 #endregion
 
-#region Packet Event Handling
+#region Packet Handling
+		private void HandlePacket(IPacket incomingPacket) {
+			OnPacketReceived?.Invoke(incomingPacket);
+		}
+
 		public void RegisterPacketHandler<T>(IPacketHandler<T> handler) where T : IPacket {
 			void Action(IPacket packet) {
 				if (packet is T tPacket) {
@@ -125,7 +128,7 @@ namespace PeachGame.Client {
 			}
 		}
 
-		private void SendPacket(IPacket packet) {
+		public void SendPacket(IPacket packet) {
 			if (!_client.Connected) {
 				Debug.LogError("서버에 연결되지 않았습니다!");
 				return;
@@ -133,10 +136,6 @@ namespace PeachGame.Client {
 			Debug.Log($"[C -> S] {packet}");
 
 			_writer.Write(packet);
-		}
-
-		private void HandlePacket(IPacket incomingPacket) {
-			OnPacketReceived?.Invoke(incomingPacket);
 		}
 	}
 }
