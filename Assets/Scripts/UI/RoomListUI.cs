@@ -4,16 +4,21 @@ using PeachGame.Common.Packets.Client;
 using PeachGame.Common.Packets.Server;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace PeachGame.Client.UI {
-	public class RoomListUI : MonoBehaviour, IPacketHandler<ServerResponseRoomListPacket> {
+	public class RoomListUI : MonoBehaviour,
+		IPacketHandler<ServerResponseRoomListPacket>,
+		IPacketHandler<ServerResponseCreateRoomPacket> {
 		[Header("방 목록")]
 		[SerializeField] private RoomListElement _roomListElementPrefab;
 		[SerializeField] private RectTransform _roomListParent;
 
-
 		[Header("닉네임 설정")]
 		[SerializeField] private TMP_InputField _nicknameInput;
+
+		[Header("방 생성")]
+		[SerializeField] private TMP_InputField _roomNameInput;
 
 		private void Awake() {
 			_roomListElements = new List<RoomListElement>();
@@ -25,11 +30,13 @@ namespace PeachGame.Client.UI {
 		}
 
 		private void OnEnable() {
-			NetworkManager.Instance.RegisterPacketHandler(this);
+			NetworkManager.Instance.RegisterPacketHandler<ServerResponseRoomListPacket>(this);
+			NetworkManager.Instance.RegisterPacketHandler<ServerResponseCreateRoomPacket>(this);
 		}
 
 		private void OnDisable() {
-			NetworkManager.Instance.UnregisterPacketHandler(this);
+			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseRoomListPacket>(this);
+			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseCreateRoomPacket>(this);
 		}
 
 #region 닉네임 설정
@@ -59,6 +66,24 @@ namespace PeachGame.Client.UI {
 				roomListElement.Setup(roomInfo);
 				_roomListElements.Add(roomListElement);
 			});
+		}
+#endregion
+
+#region 방 생성
+		public void CreateRoom() {
+			var roomName = _roomNameInput.text;
+
+			if (string.IsNullOrWhiteSpace(roomName)) {
+				Debug.LogError("방 이름을 입력해주세요.");
+				return;
+			}
+
+			NetworkManager.Instance.SendPacket(new ClientRequestCreateRoomPacket(roomName));
+		}
+
+		public void Handle(ServerResponseCreateRoomPacket packet) {
+			NetworkManager.Instance.CurrentRoomId = packet.RoomId;
+			SceneManager.LoadScene("Lobby");
 		}
 #endregion
 	}

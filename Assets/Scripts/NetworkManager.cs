@@ -30,6 +30,7 @@ namespace PeachGame.Client {
 		// 로컬 클라이언트 값
 		public string Nickname { get; set; }
 		public Guid ClientId { get; set; }
+		public int CurrentRoomId { get; set; }
 
 		// 패킷 처리
 		public static event Action<IPacket> OnPacketReceived;
@@ -45,10 +46,15 @@ namespace PeachGame.Client {
 			Instance = this;
 			DontDestroyOnLoad(this.gameObject);
 
-			// 변수 초기화
+			// 네트워킹 변수 초기화
 			_client = new TcpClient();
 			_packetQueue = new ConcurrentQueue<IPacket>();
 			_packetHandlerCache = new Dictionary<Type, Action<IPacket>>();
+
+			// 로컬 값 초기화
+			Nickname = string.Empty;
+			ClientId = Guid.Empty;
+			CurrentRoomId = -1;
 		}
 
 		private void OnDestroy() {
