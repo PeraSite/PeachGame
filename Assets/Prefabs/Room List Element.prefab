@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 2833750743288196708}
   - component: {fileID: 2833750743288196711}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Join Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -488,6 +488,7 @@ MonoBehaviour:
   _roomNameText: {fileID: 2833750744158530599}
   _playersText: {fileID: 2833750743246367147}
   _stateText: {fileID: 2833750743433568178}
+  _joinButton: {fileID: 2833750743288196711}
 --- !u!1 &2833750744115499483
 GameObject:
   m_ObjectHideFlags: 0
