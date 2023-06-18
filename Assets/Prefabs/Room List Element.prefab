@@ -403,6 +403,7 @@ GameObject:
   - component: {fileID: 2833750743544388216}
   - component: {fileID: 2833750743544388198}
   - component: {fileID: 2833750743544388217}
+  - component: {fileID: 5861204041729991774}
   m_Layer: 5
   m_Name: Room List Element
   m_TagString: Untagged
@@ -432,7 +433,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2833750743544388198
 CanvasRenderer:
@@ -472,6 +473,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5861204041729991774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2833750743544388219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc6a6bf321c145cab2a3cb2163d76aea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomNameText: {fileID: 2833750744158530599}
+  _playersText: {fileID: 2833750743246367147}
+  _stateText: {fileID: 2833750743433568178}
 --- !u!1 &2833750744115499483
 GameObject:
   m_ObjectHideFlags: 0
