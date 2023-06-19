@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using PeachGame.Client.UI.Elements;
 using PeachGame.Common.Models;
 using PeachGame.Common.Packets.Client;
@@ -16,6 +18,8 @@ namespace PeachGame.Client.UI {
 		[Header("방 목록")]
 		[SerializeField] private RoomListElement _roomListElementPrefab;
 		[SerializeField] private RectTransform _roomListParent;
+		[SerializeField] private float _autoRefreshTime = 1f;
+
 
 		[Header("닉네임 설정")]
 		[SerializeField] private TMP_InputField _nicknameInput;
@@ -30,6 +34,7 @@ namespace PeachGame.Client.UI {
 		private void Start() {
 			SetupNickname();
 			RefreshRoomList();
+			StartRoomRefreshTimer();
 		}
 
 		private void OnEnable() {
@@ -71,6 +76,16 @@ namespace PeachGame.Client.UI {
 				roomListElement.Setup(roomInfo, JoinRoom);
 				_roomListElements.Add(roomListElement);
 			});
+		}
+
+		private void StartRoomRefreshTimer() {
+			RoomRefreshTimer().Forget();
+		}
+
+		private async UniTaskVoid RoomRefreshTimer() {
+			RefreshRoomList();
+			await UniTask.Delay(TimeSpan.FromSeconds(_autoRefreshTime));
+			StartRoomRefreshTimer();
 		}
 #endregion
 

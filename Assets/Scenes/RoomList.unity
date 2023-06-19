@@ -291,7 +291,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00009579281}
+  m_AnchoredPosition: {x: 0, y: 0.00037679658}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &20468407
@@ -349,6 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _roomListElementPrefab: {fileID: 5861204041729991774, guid: 0208fc2c9aa01114aa33a0cf5b10aeaa, type: 3}
   _roomListParent: {fileID: 20468406}
+  _autoRefreshTime: 2
   _nicknameInput: {fileID: 1012998197}
   _roomNameInput: {fileID: 1898774314}
 --- !u!4 &99676835
@@ -518,7 +519,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 173247998}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9433424
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
