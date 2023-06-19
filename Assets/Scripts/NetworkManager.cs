@@ -100,7 +100,7 @@ namespace PeachGame.Client {
 		}
 #endregion
 
-		public async UniTask JoinServer() {
+		public async UniTask JoinServer(string nickname) {
 			if (_client.Connected) {
 				Debug.Log("Can't join twice!");
 				return;
@@ -113,7 +113,7 @@ namespace PeachGame.Client {
 
 			ClientId = Guid.NewGuid();
 
-			SendPacket(new ClientPingPacket(ClientId));
+			SendPacket(new ClientPingPacket(ClientId, nickname));
 
 			while (_client.Connected) {
 				try {

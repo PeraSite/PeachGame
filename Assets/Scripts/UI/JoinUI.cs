@@ -23,7 +23,7 @@ namespace PeachGame.Client.UI {
 				return;
 			}
 
-			UniTask.RunOnThreadPool(() => NetworkManager.Instance.JoinServer()).Forget();
+			UniTask.RunOnThreadPool(() => NetworkManager.Instance.JoinServer(nickname)).Forget();
 		}
 
 		public void Handle(ServerPongPacket packet) {
