@@ -34,7 +34,7 @@ namespace PeachGame.Client {
 
 		// 패킷 처리
 		public static event Action<IPacket> OnPacketReceived;
-		private Dictionary<Type, Action<IPacket>> _packetHandlerCache;
+		private Dictionary<(Type, Type), Action<IPacket>> _packetHandlerCache;
 
 #region Unity Lifecycle
 		private void Awake() {
@@ -49,7 +49,7 @@ namespace PeachGame.Client {
 			// 네트워킹 변수 초기화
 			_client = new TcpClient();
 			_packetQueue = new ConcurrentQueue<IPacket>();
-			_packetHandlerCache = new Dictionary<Type, Action<IPacket>>();
+			_packetHandlerCache = new Dictionary<(Type, Type), Action<IPacket>>();
 
 			// 로컬 값 초기화
 			Nickname = string.Empty;
@@ -90,12 +90,12 @@ namespace PeachGame.Client {
 				}
 			}
 
-			_packetHandlerCache[handler.GetType()] = Action;
+			_packetHandlerCache[(handler.GetType(), typeof(T))] = Action;
 			OnPacketReceived += Action;
 		}
 
 		public void UnregisterPacketHandler<T>(IPacketHandler<T> handler) where T : IPacket {
-			Action<IPacket> action = _packetHandlerCache[handler.GetType()];
+			Action<IPacket> action = _packetHandlerCache[(handler.GetType(), typeof(T))];
 			OnPacketReceived -= action;
 		}
 #endregion

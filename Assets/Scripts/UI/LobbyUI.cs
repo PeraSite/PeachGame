@@ -24,6 +24,11 @@ namespace PeachGame.Client.UI {
 
 		private void Awake() {
 			_instantiatedPlayerListElements = new List<PlayerListElement>();
+			Debug.Log($"{name} {gameObject.GetInstanceID()} Awake!");
+		}
+
+		private void OnDestroy() {
+			Debug.Log($"{name} {gameObject.GetInstanceID()} OnDestroy!");
 		}
 
 		private void OnEnable() {
@@ -58,6 +63,7 @@ namespace PeachGame.Client.UI {
 			_stateText.text = $"상태 : {state}";
 
 			// 플레이어 목록 업데이트
+			Debug.Log($"room state - {_instantiatedPlayerListElements.Count}");
 			_instantiatedPlayerListElements.ForEach(x => Destroy(x.gameObject));
 			_instantiatedPlayerListElements.Clear();
 			info.Players.ForEach(playerInfo => {

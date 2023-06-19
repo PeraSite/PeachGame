@@ -1,5 +1,5 @@
-﻿using PeachGame.Common.Models;
-using PeachGame.Common.Packets.Client;
+﻿using System;
+using PeachGame.Common.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +11,7 @@ namespace PeachGame.Client.UI.Elements {
 		[SerializeField] private TextMeshProUGUI _stateText;
 		[SerializeField] private Button _joinButton;
 
-		public void Setup(RoomInfo info) {
+		public void Setup(RoomInfo info, Action<RoomInfo> onJoin) {
 			_roomNameText.text = info.Name;
 			_playersText.text = $"플레이어 : {info.CurrentPlayers}/{info.MaxPlayers}";
 
@@ -23,19 +23,7 @@ namespace PeachGame.Client.UI.Elements {
 			};
 			_stateText.text = $"상태 : {state}";
 
-			_joinButton.onClick.AddListener(() => {
-				if (info.CurrentPlayers >= info.MaxPlayers) {
-					Debug.LogError("방이 꽉 찼습니다.");
-					return;
-				}
-
-				if (info.State != RoomState.Waiting) {
-					Debug.LogError("방이 대기 상태가 아닙니다.");
-					return;
-				}
-
-				NetworkManager.Instance.SendPacket(new ClientRequestJoinRoomPacket(info.RoomId));
-			});
+			_joinButton.onClick.AddListener(() => onJoin(info));
 		}
 	}
 }
