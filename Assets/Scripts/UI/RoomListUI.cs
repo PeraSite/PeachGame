@@ -84,7 +84,7 @@ namespace PeachGame.Client.UI {
 
 		private async UniTaskVoid RoomRefreshTimer() {
 			RefreshRoomList();
-			await UniTask.Delay(TimeSpan.FromSeconds(_autoRefreshTime));
+			await UniTask.Delay(TimeSpan.FromSeconds(_autoRefreshTime), cancellationToken: this.GetCancellationTokenOnDestroy());
 			StartRoomRefreshTimer();
 		}
 #endregion
@@ -104,7 +104,6 @@ namespace PeachGame.Client.UI {
 		public void Handle(ServerResponseCreateRoomPacket packet) {
 			NetworkManager.Instance.CurrentRoomId = packet.RoomId;
 			SceneManager.LoadScene("Lobby");
-			Debug.Log("ServerResponseCreateRoomPacket handled!");
 		}
 #endregion
 

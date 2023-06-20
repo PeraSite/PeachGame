@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PeachGame.Client.UI.Elements;
 using PeachGame.Common.Models;
 using PeachGame.Common.Packets.Client;
@@ -9,36 +8,40 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace PeachGame.Client.UI {
-	public class LobbyUI : MonoBehaviour, IPacketHandler<ServerRoomStatePacket>, IPacketHandler<ServerResponseQuitRoomPacket> {
+	public class LobbyUI : MonoBehaviour,
+		IPacketHandler<ServerRoomStatePacket>,
+		IPacketHandler<ServerResponseQuitRoomPacket>,
+		IPacketHandler<ClientChatPacket> {
 		[Header("방 정보")]
 		[SerializeField] private TextMeshProUGUI _roomNameText;
 		[SerializeField] private TextMeshProUGUI _playerCountText;
 		[SerializeField] private TextMeshProUGUI _stateText;
 
-
 		[Header("플레이어 목록")]
 		[SerializeField] private PlayerListElement _playerListElementPrefab;
 		[SerializeField] private RectTransform _playerListElementParent;
+
+		[Header("채팅")]
+		[SerializeField] private TextMeshProUGUI _chatLog;
+		[SerializeField] private TMP_InputField _chatInput;
 
 		private List<PlayerListElement> _instantiatedPlayerListElements;
 
 		private void Awake() {
 			_instantiatedPlayerListElements = new List<PlayerListElement>();
-			Debug.Log($"{name} {gameObject.GetInstanceID()} Awake!");
-		}
-
-		private void OnDestroy() {
-			Debug.Log($"{name} {gameObject.GetInstanceID()} OnDestroy!");
+			_chatInput.onSubmit.AddListener(_ => OnChatSend());
 		}
 
 		private void OnEnable() {
 			NetworkManager.Instance.RegisterPacketHandler<ServerRoomStatePacket>(this);
 			NetworkManager.Instance.RegisterPacketHandler<ServerResponseQuitRoomPacket>(this);
+			NetworkManager.Instance.RegisterPacketHandler<ClientChatPacket>(this);
 		}
 
 		private void OnDisable() {
 			NetworkManager.Instance.UnregisterPacketHandler<ServerRoomStatePacket>(this);
 			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseQuitRoomPacket>(this);
+			NetworkManager.Instance.UnregisterPacketHandler<ClientChatPacket>(this);
 		}
 
 		public void OnStartButton() {
@@ -63,7 +66,6 @@ namespace PeachGame.Client.UI {
 			_stateText.text = $"상태 : {state}";
 
 			// 플레이어 목록 업데이트
-			Debug.Log($"room state - {_instantiatedPlayerListElements.Count}");
 			_instantiatedPlayerListElements.ForEach(x => Destroy(x.gameObject));
 			_instantiatedPlayerListElements.Clear();
 			info.Players.ForEach(playerInfo => {
@@ -75,6 +77,21 @@ namespace PeachGame.Client.UI {
 
 		public void Handle(ServerResponseQuitRoomPacket packet) {
 			SceneManager.LoadScene("RoomList");
+		}
+
+		public void OnChatSend() {
+			var text = _chatInput.text;
+			if (string.IsNullOrEmpty(text)) {
+				return;
+			}
+
+			NetworkManager.Instance.SendPacket(new ClientChatPacket(NetworkManager.Instance.Nickname, text));
+			_chatInput.text = "";
+			_chatInput.ActivateInputField();
+		}
+
+		public void Handle(ClientChatPacket packet) {
+			_chatLog.text += $"{packet.Nickname} : {packet.Message}\n";
 		}
 	}
 }
