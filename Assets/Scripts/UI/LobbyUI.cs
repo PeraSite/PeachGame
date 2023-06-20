@@ -11,7 +11,8 @@ namespace PeachGame.Client.UI {
 	public class LobbyUI : MonoBehaviour,
 		IPacketHandler<ServerRoomStatePacket>,
 		IPacketHandler<ServerResponseQuitRoomPacket>,
-		IPacketHandler<ClientChatPacket> {
+		IPacketHandler<ClientChatPacket>,
+		IPacketHandler<ServerLobbyAnnouncePacket> {
 		[Header("방 정보")]
 		[SerializeField] private TextMeshProUGUI _roomNameText;
 		[SerializeField] private TextMeshProUGUI _playerCountText;
@@ -36,12 +37,14 @@ namespace PeachGame.Client.UI {
 			NetworkManager.Instance.RegisterPacketHandler<ServerRoomStatePacket>(this);
 			NetworkManager.Instance.RegisterPacketHandler<ServerResponseQuitRoomPacket>(this);
 			NetworkManager.Instance.RegisterPacketHandler<ClientChatPacket>(this);
+			NetworkManager.Instance.RegisterPacketHandler<ServerLobbyAnnouncePacket>(this);
 		}
 
 		private void OnDisable() {
 			NetworkManager.Instance.UnregisterPacketHandler<ServerRoomStatePacket>(this);
 			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseQuitRoomPacket>(this);
 			NetworkManager.Instance.UnregisterPacketHandler<ClientChatPacket>(this);
+			NetworkManager.Instance.UnregisterPacketHandler<ServerLobbyAnnouncePacket>(this);
 		}
 
 		public void OnStartButton() {
@@ -92,6 +95,10 @@ namespace PeachGame.Client.UI {
 
 		public void Handle(ClientChatPacket packet) {
 			_chatLog.text += $"{packet.Nickname} : {packet.Message}\n";
+		}
+
+		public void Handle(ServerLobbyAnnouncePacket packet) {
+			_chatLog.text += $"<color=#E3C565>{packet.Message}</color>\n";
 		}
 	}
 }
