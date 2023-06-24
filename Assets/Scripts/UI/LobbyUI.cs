@@ -48,7 +48,7 @@ namespace PeachGame.Client.UI {
 		}
 
 		public void OnStartButton() {
-			// NetworkManager.Instance.SendPacket(new ClientRequestStartPacket());
+			NetworkManager.Instance.SendPacket(new ClientRequestStartPacket());
 		}
 
 		public void OnQuitButton() {
