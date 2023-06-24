@@ -90,11 +90,21 @@ namespace PeachGame.Client {
 				}
 			}
 
-			_packetHandlerCache[(handler.GetType(), typeof(T))] = Action;
+			(Type handlerType, Type packetType) handlingType = (handler.GetType(), typeof(T));
+			if (_packetHandlerCache.ContainsKey(handlingType)) {
+				throw new Exception($"Can't register already registered handler: {handlingType.handlerType} - {handlingType.packetType}");
+			}
+
+			_packetHandlerCache[handlingType] = Action;
 			OnPacketReceived += Action;
 		}
 
 		public void UnregisterPacketHandler<T>(IPacketHandler<T> handler) where T : IPacket {
+			(Type handlerType, Type packetType) handlingType = (handler.GetType(), typeof(T));
+			if (!_packetHandlerCache.ContainsKey(handlingType)) {
+				throw new Exception($"Can't register not registered handler: {handlingType.handlerType} - {handlingType.packetType}");
+			}
+
 			Action<IPacket> action = _packetHandlerCache[(handler.GetType(), typeof(T))];
 			OnPacketReceived -= action;
 		}
