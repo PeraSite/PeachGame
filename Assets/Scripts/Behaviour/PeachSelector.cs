@@ -68,7 +68,7 @@ namespace PeachGame.Client.Behaviour {
 			_selectBoxImage.gameObject.SetActive(false);
 
 			// 선택한 복숭아 찾기
-			List<Peach> selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position)).ToList();
+			List<Peach> selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position) && !x.IsDeleted).ToList();
 			(int x, int y)[] selectedPeachPositions = selectedPeaches.Select(x => x.Position).ToArray();
 
 			// 최소 2개는 선택해야 점수 획득 가능 => 별도 체크 

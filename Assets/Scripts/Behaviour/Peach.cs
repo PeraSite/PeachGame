@@ -14,6 +14,7 @@ namespace PeachGame.Client.Behaviour {
 		[SerializeField] private Sprite _selectedSprite;
 
 		private bool _isSelected;
+		public bool IsDeleted { get; private set; }
 
 		public int Number { get; private set; }
 		public (int x, int y) Position { get; private set; }
@@ -29,12 +30,14 @@ namespace PeachGame.Client.Behaviour {
 		}
 
 		public void Select() {
+			if (IsDeleted) return;
 			if (_isSelected) return;
 			_isSelected = true;
 			_peachImage.sprite = _selectedSprite;
 		}
 
 		public void Deselect() {
+			if (IsDeleted) return;
 			if (!_isSelected) return;
 
 			_isSelected = false;
@@ -43,6 +46,7 @@ namespace PeachGame.Client.Behaviour {
 
 		public void Delete() {
 			_canvasGroup.alpha = 0f;
+			IsDeleted = true;
 		}
 	}
 }
