@@ -9,6 +9,7 @@ using PeachGame.Common.Packets.Server;
 using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace PeachGame.Client.UI {
@@ -28,31 +29,40 @@ namespace PeachGame.Client.UI {
 		[SerializeField] private float _elementSpacing = 30f;
 		[SerializeField] private float _rankAnimationTime = 0.5f;
 
+		[Header("패널")]
+		[SerializeField] private GameObject _playPanel;
+		[SerializeField] private GameObject _endingPanel;
+
+		[Header("결과")]
+		[SerializeField] private ResultElement _resultElementPrefab;
+		[SerializeField] private Transform _resultElementParent;
 
 		private void Awake() {
 			_rankElements = new Dictionary<Guid, RankElement>();
+			_playPanel.SetActive(true);
+			_endingPanel.SetActive(false);
+			_leftTimeBar.fillAmount = 1.0f;
 		}
 
 		private void OnEnable() {
-			this.RegisterPacketHandler<ServerRoomStatePacket>();
+			this.RegisterPacketHandler();
 		}
 
 		private void OnDisable() {
-			this.UnregisterPacketHandler<ServerRoomStatePacket>();
+			this.UnregisterPacketHandler();
 		}
 
 		public void Handle(ServerRoomStatePacket packet) {
 			RoomInfo roomInfo = packet.RoomInfo;
 
 			if (roomInfo.State == RoomState.Ending) {
-				Debug.Log("Game Over!");
-				//TODO: Show ending screen
+				ShowEnding(roomInfo);
 				return;
 			}
 
 			// 남은 시간 업데이트
 			_leftTimeText.text = $"{roomInfo.LeftTime}";
-			_leftTimeBar.fillAmount = (float)roomInfo.LeftTime / PLAY_TIME;
+			_leftTimeBar.DOFillAmount((float)roomInfo.LeftTime / PLAY_TIME, _rankAnimationTime);
 
 			// 랭킹 업데이트 로직
 			UpdateRankUI(roomInfo);
@@ -112,6 +122,9 @@ namespace PeachGame.Client.UI {
 				.OrderByDescending(x => x.Value)
 				.ToList();
 
+			var elementDistance = _elementWidth + _elementSpacing;
+			var startX = (roomInfo.Players.Count - 1) * -(elementDistance / 2);
+
 			foreach (PlayerInfo player in roomInfo.Players) {
 				// 점수, 순위 계산
 				var score = roomInfo.Score.GetValueOrDefault(player.Id, 0);
@@ -120,8 +133,32 @@ namespace PeachGame.Client.UI {
 				// 프리팹 생성
 				var element = Instantiate(_rankElementPrefab, _rankElementParent);
 				element.Set(rank + 1, player.Nickname, score);
+
+				// 지정된 X 좌표로 이동
+				var rect = (RectTransform)element.transform;
+				rect.anchoredPosition = new Vector2(startX + elementDistance * rank, rect.anchoredPosition.y);
+
 				_rankElements[player.Id] = element;
 			}
+		}
+
+		private void ShowEnding(RoomInfo roomInfo) {
+			_playPanel.SetActive(false);
+			_endingPanel.SetActive(true);
+
+			var sortedScores = roomInfo.Players
+				.ToDictionary(x => x.Nickname, x => roomInfo.Score[x.Id])
+				.OrderByDescending(x => x.Value)
+				.ToList();
+
+			foreach (var (nickname, score) in sortedScores) {
+				var go = Instantiate(_resultElementPrefab, _resultElementParent);
+				go.Setup(nickname, score);
+			}
+		}
+
+		public void ReturnLobby() {
+			SceneManager.LoadScene("RoomList");
 		}
 	}
 }

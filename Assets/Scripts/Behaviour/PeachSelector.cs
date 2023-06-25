@@ -71,8 +71,11 @@ namespace PeachGame.Client.Behaviour {
 			List<Peach> selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position)).ToList();
 			(int x, int y)[] selectedPeachPositions = selectedPeaches.Select(x => x.Position).ToArray();
 
-			// 선택한 복숭아 삭제 요청 패킷 전송
-			NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(selectedPeachPositions));
+			// 최소 2개는 선택해야 점수 획득 가능 => 별도 체크 
+			if (selectedPeaches.Count >= 2) {
+				// 선택한 복숭아 삭제 요청 패킷 전송
+				NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(selectedPeachPositions));
+			}
 
 			// 선택 해제
 			selectedPeaches.ForEach(x => x.Deselect());
