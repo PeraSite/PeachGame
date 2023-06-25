@@ -56,9 +56,14 @@ namespace PeachGame.Client.UI {
 		}
 
 		public void UpdateNickname() {
+			var newNickname = _nicknameInput.text;
+			if (string.IsNullOrEmpty(newNickname)) {
+				return;
+			}
+
 			// 새로운 닉네임으로 값 업데이트 후 패킷 전송
-			NetworkManager.Instance.Nickname = _nicknameInput.text;
-			NetworkManager.Instance.SendPacket(new ClientPingPacket(NetworkManager.Instance.ClientId, _nicknameInput.text));
+			NetworkManager.Instance.Nickname = newNickname;
+			NetworkManager.Instance.SendPacket(new ClientPingPacket(NetworkManager.Instance.ClientId, newNickname));
 		}
 #endregion
 
