@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TMPro;
+using PeachGame.Common.Packets.Client;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,24 +9,21 @@ namespace PeachGame.Client.Behaviour {
 	public class PeachSelector : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 		[SerializeField] private Image _selectBoxImage;
 		[SerializeField] private RectTransform _canvas;
-		[SerializeField] private TextMeshProUGUI _scoreText;
 
 		private List<Peach> _peaches;
 		private Vector2 _startPosition;
 		private Rect _selectRect;
 
-		private void Awake() {
+		private void Start() {
 			_selectBoxImage.gameObject.SetActive(false);
 			_peaches = new List<Peach>();
-		}
-
-		private void Start() {
 			var peaches = FindObjectsOfType<Peach>();
 			foreach (var peach in peaches) {
 				_peaches.Add(peach);
 			}
 		}
 
+#region Selection Logic
 		public void OnPointerDown(PointerEventData eventData) {
 			_startPosition = eventData.position;
 			_selectRect = new Rect();
@@ -70,14 +67,16 @@ namespace PeachGame.Client.Behaviour {
 		public void OnEndDrag(PointerEventData eventData) {
 			_selectBoxImage.gameObject.SetActive(false);
 
-			var selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position)).ToList();
-			var number = selectedPeaches.Sum(x => x.Number);
+			// 선택한 복숭아 찾기
+			List<Peach> selectedPeaches = _peaches.Where(x => _selectRect.Contains(x.transform.position)).ToList();
+			(int x, int y)[] selectedPeachPositions = selectedPeaches.Select(x => x.Position).ToArray();
 
-			if (number == 10) {
-				selectedPeaches.ForEach(x => x.Delete());
-			} else {
-				selectedPeaches.ForEach(x => x.Deselect());
-			}
+			// 선택한 복숭아 삭제 요청 패킷 전송
+			NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(selectedPeachPositions));
+
+			// 선택 해제
+			selectedPeaches.ForEach(x => x.Deselect());
 		}
+  #endregion
 	}
 }

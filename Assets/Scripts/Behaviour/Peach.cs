@@ -17,14 +17,16 @@ namespace PeachGame.Client.Behaviour {
 		private bool _isSelected;
 
 		public int Number { get; private set; }
+		public (int x, int y) Position { get; private set; }
 
 		private void Awake() {
 			_canvasGroup = GetComponent<CanvasGroup>();
 		}
 
-		public void Init(int number) {
+		public void Init(int number, int x, int y) {
 			_numberText.text = number.ToString();
 			Number = number;
+			Position = (x, y);
 		}
 
 		public void Select() {
