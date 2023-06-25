@@ -107,6 +107,7 @@ namespace PeachGame.Client {
 			}
 
 			Action<IPacket> action = _packetHandlerCache[(handler.GetType(), typeof(T))];
+			_packetHandlerCache.Remove(handlingType);
 			OnPacketReceived -= action;
 		}
 #endregion
