@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = System.Random;
 
-namespace PeachGame.Client {
+namespace PeachGame.Client.Behaviour {
 	public class PeachGenerator : MonoBehaviour {
 		[Title("Generation")]
 		[SerializeField] private Peach _peachPrefab;

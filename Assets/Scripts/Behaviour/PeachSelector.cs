@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace PeachGame.Client {
+namespace PeachGame.Client.Behaviour {
 	public class PeachSelector : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 		[SerializeField] private Image _selectBoxImage;
 		[SerializeField] private RectTransform _canvas;

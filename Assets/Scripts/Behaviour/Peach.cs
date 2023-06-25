@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PeachGame.Client {
+namespace PeachGame.Client.Behaviour {
 	public class Peach : MonoBehaviour {
 		[Title("Components")]
 		[SerializeField] private TextMeshProUGUI _numberText;
