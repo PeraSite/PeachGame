@@ -31,6 +31,7 @@ namespace PeachGame.Client {
 		public string Nickname { get; set; }
 		public Guid ClientId { get; set; }
 		public int CurrentRoomId { get; set; }
+		public int RandomSeed { get; set; }
 
 		// 패킷 처리
 		public static event Action<IPacket> OnPacketReceived;

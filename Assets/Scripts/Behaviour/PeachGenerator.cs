@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = System.Random;
 
 namespace PeachGame.Client {
 	public class PeachGenerator : MonoBehaviour {
@@ -13,11 +14,13 @@ namespace PeachGame.Client {
 
 		private void Awake() {
 			_peaches = new Dictionary<Peach, int>();
+			var random = new Random(NetworkManager.Instance.RandomSeed);
+
 			for (int i = 1; i <= _peachCount; i++) {
 				var peach = Instantiate(_peachPrefab, _peachGrid);
 				peach.name = $"Peach {i}";
 
-				var number = Random.Range(1, 9);
+				var number = random.Next(0, 9);
 				peach.Init(number);
 				_peaches[peach] = number;
 			}

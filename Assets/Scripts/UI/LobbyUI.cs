@@ -102,10 +102,12 @@ namespace PeachGame.Client.UI {
 		}
 
 		public void Handle(ServerLobbyAnnouncePacket packet) {
-			_chatLog.text += $"<color=#E3C565>{packet.Message}</color>\n";
+			_chatLog.text += $"<color=#FF6E26>{packet.Message}</color>\n";
 		}
 
 		public void Handle(ServerResponseStartPacket packet) {
+			// 공유 시드 값 설정
+			NetworkManager.Instance.RandomSeed = packet.Seed;
 			SceneManager.LoadScene("Play");
 		}
 	}
