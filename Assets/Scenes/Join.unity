@@ -1012,8 +1012,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a9693b65d51434d8b459d67e28aceb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ip: 127.0.0.1
-  _port: 9000
+  _ip: peachgameserver.jeongjehoon.kro.kr
+  _port: 9999
 --- !u!4 &1218018688
 Transform:
   m_ObjectHideFlags: 0

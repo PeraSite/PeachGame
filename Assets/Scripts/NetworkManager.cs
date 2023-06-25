@@ -118,7 +118,7 @@ namespace PeachGame.Client {
 				return;
 			}
 
-			await _client.ConnectAsync(IPAddress.Parse(_ip), _port);
+			await _client.ConnectAsync(_ip, _port);
 			_stream = _client.GetStream();
 			_writer = new BinaryWriter(_stream);
 			_reader = new BinaryReader(_stream);
