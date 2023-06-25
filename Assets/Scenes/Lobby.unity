@@ -657,6 +657,7 @@ MonoBehaviour:
   _playerListElementParent: {fileID: 1333703025}
   _chatLog: {fileID: 1769957261}
   _chatInput: {fileID: 648213053}
+  _startButton: {fileID: 220507732}
 --- !u!1 &158806963
 GameObject:
   m_ObjectHideFlags: 0

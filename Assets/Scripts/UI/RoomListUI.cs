@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using PeachGame.Client.UI.Elements;
+using PeachGame.Client.Utils;
 using PeachGame.Common.Models;
 using PeachGame.Common.Packets.Client;
 using PeachGame.Common.Packets.Server;
@@ -38,15 +38,15 @@ namespace PeachGame.Client.UI {
 		}
 
 		private void OnEnable() {
-			NetworkManager.Instance.RegisterPacketHandler<ServerResponseRoomListPacket>(this);
-			NetworkManager.Instance.RegisterPacketHandler<ServerResponseCreateRoomPacket>(this);
-			NetworkManager.Instance.RegisterPacketHandler<ServerResponseJoinRoomPacket>(this);
+			this.RegisterPacketHandler<ServerResponseRoomListPacket>();
+			this.RegisterPacketHandler<ServerResponseCreateRoomPacket>();
+			this.RegisterPacketHandler<ServerResponseJoinRoomPacket>();
 		}
 
 		private void OnDisable() {
-			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseRoomListPacket>(this);
-			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseCreateRoomPacket>(this);
-			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseJoinRoomPacket>(this);
+			this.UnregisterPacketHandler<ServerResponseRoomListPacket>();
+			this.UnregisterPacketHandler<ServerResponseCreateRoomPacket>();
+			this.UnregisterPacketHandler<ServerResponseJoinRoomPacket>();
 		}
 
 #region 닉네임 설정

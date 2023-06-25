@@ -7,6 +7,7 @@ using PeachGame.Common.Packets.Server;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace PeachGame.Client.UI {
 	public class LobbyUI : MonoBehaviour,
@@ -28,9 +29,12 @@ namespace PeachGame.Client.UI {
 		[SerializeField] private TextMeshProUGUI _chatLog;
 		[SerializeField] private TMP_InputField _chatInput;
 
+		[Header("방장")]
+		[SerializeField] private Button _startButton;
+
 		private List<PlayerListElement> _instantiatedPlayerListElements;
 
-		private void Awake() {
+		private void Start() {
 			_instantiatedPlayerListElements = new List<PlayerListElement>();
 			_chatInput.onSubmit.AddListener(_ => OnChatSend());
 		}
@@ -80,6 +84,9 @@ namespace PeachGame.Client.UI {
 				element.Setup(playerInfo);
 				_instantiatedPlayerListElements.Add(element);
 			});
+
+			// 방장 정보 확인 후 시작 버튼 여부 변경
+			_startButton.interactable = packet.RoomInfo.Owner == NetworkManager.Instance.ClientId;
 		}
 
 		public void Handle(ServerResponseQuitRoomPacket packet) {
