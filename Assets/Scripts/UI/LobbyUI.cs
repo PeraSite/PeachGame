@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PeachGame.Client.UI.Elements;
+using PeachGame.Client.Utils;
 using PeachGame.Common.Models;
 using PeachGame.Common.Packets.Client;
 using PeachGame.Common.Packets.Server;
@@ -12,7 +13,8 @@ namespace PeachGame.Client.UI {
 		IPacketHandler<ServerRoomStatePacket>,
 		IPacketHandler<ServerResponseQuitRoomPacket>,
 		IPacketHandler<ClientChatPacket>,
-		IPacketHandler<ServerLobbyAnnouncePacket> {
+		IPacketHandler<ServerLobbyAnnouncePacket>,
+		IPacketHandler<ServerResponseStartPacket> {
 		[Header("방 정보")]
 		[SerializeField] private TextMeshProUGUI _roomNameText;
 		[SerializeField] private TextMeshProUGUI _playerCountText;
@@ -34,17 +36,19 @@ namespace PeachGame.Client.UI {
 		}
 
 		private void OnEnable() {
-			NetworkManager.Instance.RegisterPacketHandler<ServerRoomStatePacket>(this);
-			NetworkManager.Instance.RegisterPacketHandler<ServerResponseQuitRoomPacket>(this);
-			NetworkManager.Instance.RegisterPacketHandler<ClientChatPacket>(this);
-			NetworkManager.Instance.RegisterPacketHandler<ServerLobbyAnnouncePacket>(this);
+			this.RegisterPacketHandler<ServerRoomStatePacket>();
+			this.RegisterPacketHandler<ServerResponseQuitRoomPacket>();
+			this.RegisterPacketHandler<ClientChatPacket>();
+			this.RegisterPacketHandler<ServerLobbyAnnouncePacket>();
+			this.RegisterPacketHandler<ServerResponseStartPacket>();
 		}
 
 		private void OnDisable() {
-			NetworkManager.Instance.UnregisterPacketHandler<ServerRoomStatePacket>(this);
-			NetworkManager.Instance.UnregisterPacketHandler<ServerResponseQuitRoomPacket>(this);
-			NetworkManager.Instance.UnregisterPacketHandler<ClientChatPacket>(this);
-			NetworkManager.Instance.UnregisterPacketHandler<ServerLobbyAnnouncePacket>(this);
+			this.UnregisterPacketHandler<ServerRoomStatePacket>();
+			this.UnregisterPacketHandler<ServerResponseQuitRoomPacket>();
+			this.UnregisterPacketHandler<ClientChatPacket>();
+			this.UnregisterPacketHandler<ServerLobbyAnnouncePacket>();
+			this.UnregisterPacketHandler<ServerResponseStartPacket>();
 		}
 
 		public void OnStartButton() {
@@ -99,6 +103,10 @@ namespace PeachGame.Client.UI {
 
 		public void Handle(ServerLobbyAnnouncePacket packet) {
 			_chatLog.text += $"<color=#E3C565>{packet.Message}</color>\n";
+		}
+
+		public void Handle(ServerResponseStartPacket packet) {
+			SceneManager.LoadScene("Play");
 		}
 	}
 }

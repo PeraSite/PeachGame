@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using PeachGame.Client.Utils;
 using PeachGame.Common.Packets.Server;
 using TMPro;
 using UnityEngine;
@@ -9,11 +10,11 @@ namespace PeachGame.Client.UI {
 		[SerializeField] private TMP_InputField _inputField;
 
 		private void OnEnable() {
-			NetworkManager.Instance.RegisterPacketHandler(this);
+			this.RegisterPacketHandler();
 		}
 
 		private void OnDisable() {
-			NetworkManager.Instance.UnregisterPacketHandler(this);
+			this.UnregisterPacketHandler();
 		}
 
 		public void OnJoinButton() {
