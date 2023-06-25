@@ -6,7 +6,6 @@ using PeachGame.Client.UI.Elements;
 using PeachGame.Client.Utils;
 using PeachGame.Common.Models;
 using PeachGame.Common.Packets.Server;
-using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -111,10 +110,10 @@ namespace PeachGame.Client.UI {
 
 		private void RebuildRankUI(RoomInfo roomInfo) {
 			// 기존 프리팹 초기화
-			_rankElements.Values.ForEach(x => {
-				x.DOKill();
-				Destroy(x.gameObject);
-			});
+			foreach (RankElement element in _rankElements.Values) {
+				element.DOKill();
+				Destroy(element.gameObject);
+			}
 			_rankElements.Clear();
 
 			// 점수 정렬 - Guid으로, 점수로
