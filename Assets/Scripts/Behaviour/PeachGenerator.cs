@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using PeachGame.Client.Utils;
 using PeachGame.Common.Packets.Server;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = System.Random;
 
 namespace PeachGame.Client.Behaviour {
 	public class PeachGenerator : MonoBehaviour,
 		IPacketHandler<ServerResponseDragPacket> {
-		[Title("Generation")]
+		[Header("Generation")]
 		[SerializeField] private Peach _peachPrefab;
 		[SerializeField] private Transform _peachGrid;
 		[SerializeField] private int _peachCount;

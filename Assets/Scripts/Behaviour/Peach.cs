@@ -1,16 +1,15 @@
-﻿using Sirenix.OdinInspector;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PeachGame.Client.Behaviour {
 	public class Peach : MonoBehaviour {
-		[Title("Components")]
+		[Header("Components")]
 		[SerializeField] private TextMeshProUGUI _numberText;
 		[SerializeField] private Image _peachImage;
 		private CanvasGroup _canvasGroup;
 
-		[Title("Sprites")]
+		[Header("Sprites")]
 		[SerializeField] private Sprite _defaultSprite;
 		[SerializeField] private Sprite _selectedSprite;
 
