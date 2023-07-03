@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using Cysharp.Threading.Tasks;
 using PeachGame.Common.Packets;
@@ -15,7 +14,8 @@ namespace PeachGame.Client {
 		public static NetworkManager Instance { get; private set; }
 
 		[Header("네트워킹 관련")]
-		[SerializeField] private string _ip = "127.0.0.1";
+		[SerializeField] private string _devHost = "127.0.0.1";
+		[SerializeField] private string _host = "peachgame.jeongjehoon.kro.kr";
 		[SerializeField] private int _port = 9000;
 
 		// 네트워킹 객체
@@ -118,7 +118,8 @@ namespace PeachGame.Client {
 				return;
 			}
 
-			await _client.ConnectAsync(_ip, _port);
+			var host = Application.isEditor ? _devHost : _host;
+			await _client.ConnectAsync(host, _port);
 			_stream = _client.GetStream();
 			_writer = new BinaryWriter(_stream);
 			_reader = new BinaryReader(_stream);
