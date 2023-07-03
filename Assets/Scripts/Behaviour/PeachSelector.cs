@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PeachGame.Common.Packets.Client;
 using UnityEngine;
@@ -81,5 +82,19 @@ namespace PeachGame.Client.Behaviour {
 			selectedPeaches.ForEach(x => x.Deselect());
 		}
   #endregion
+
+#if UNITY_EDITOR
+		[ContextMenu("Find Optimal Position")]
+		private void FindOptimalPosition() {
+			var currentPeach = _peaches.First(x => !x.IsDeleted);
+			var targetNumber = 10 - currentPeach.Number;
+			var targetPeach = _peaches.First(x => !x.IsDeleted && x.Number == targetNumber);
+
+			Debug.Log(currentPeach.Position);
+			Debug.Log(targetPeach.Position);
+
+			NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(new[] { currentPeach.Position, targetPeach.Position }));
+		}
+#endif
 	}
 }
