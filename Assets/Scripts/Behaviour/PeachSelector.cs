@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PeachGame.Common.Packets.Client;
@@ -8,12 +9,18 @@ using UnityEngine.UI;
 
 namespace PeachGame.Client.Behaviour {
 	public class PeachSelector : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+		[Header("컴포넌트")]
 		[SerializeField] private Image _selectBoxImage;
 		[SerializeField] private RectTransform _canvas;
 
+		[Header("네트워킹")]
+		[SerializeField] private float _broadcastTime = 0.1f;
+
 		private List<Peach> _peaches;
+		private bool _isDragging;
 		private Vector2 _startPosition;
 		private Rect _selectRect;
+		private float _timer;
 
 		private void Start() {
 			_selectBoxImage.gameObject.SetActive(false);
@@ -24,6 +31,27 @@ namespace PeachGame.Client.Behaviour {
 			}
 		}
 
+		private void Update() {
+			_timer += Time.deltaTime;
+			if (_timer >= _broadcastTime) {
+				_timer = 0f;
+				Tick();
+			}
+		}
+
+		private void Tick() {
+			// 선택 사각형 크기 Broadcast
+			var canvasScale = _canvas.localScale;
+
+			NetworkManager.Instance.SendPacket(new ClientSelectRangePacket(
+				NetworkManager.Instance.ClientId, _isDragging,
+				_selectRect.xMin / canvasScale.x,
+				_selectRect.xMax / canvasScale.x,
+				_selectRect.yMin / canvasScale.y,
+				_selectRect.yMax / canvasScale.y
+			));
+		}
+
 #region Selection Logic
 		public void OnPointerDown(PointerEventData eventData) {
 			_startPosition = eventData.position;
@@ -32,6 +60,7 @@ namespace PeachGame.Client.Behaviour {
 
 		public void OnBeginDrag(PointerEventData eventData) {
 			_selectBoxImage.gameObject.SetActive(true);
+			_isDragging = true;
 		}
 
 		public void OnDrag(PointerEventData eventData) {
@@ -51,10 +80,12 @@ namespace PeachGame.Client.Behaviour {
 				_selectRect.yMax = eventData.position.y;
 			}
 
+			// 선택 사각형 이미지 크기 변경
 			var canvasScale = _canvas.localScale;
 			_selectBoxImage.rectTransform.offsetMin = _selectRect.min / canvasScale;
 			_selectBoxImage.rectTransform.offsetMax = _selectRect.max / canvasScale;
 
+			// 범위 내의 복숭아 선택/선택 해제
 			foreach (var peach in _peaches) {
 				var peachPosition = peach.transform.position;
 				if (_selectRect.Contains(peachPosition)) {
@@ -80,6 +111,8 @@ namespace PeachGame.Client.Behaviour {
 
 			// 선택 해제
 			selectedPeaches.ForEach(x => x.Deselect());
+
+			_isDragging = false;
 		}
   #endregion
 
@@ -93,7 +126,7 @@ namespace PeachGame.Client.Behaviour {
 			Debug.Log(currentPeach.Position);
 			Debug.Log(targetPeach.Position);
 
-			NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(new[] { currentPeach.Position, targetPeach.Position }));
+			NetworkManager.Instance.SendPacket(new ClientRequestDragPacket(new[] {currentPeach.Position, targetPeach.Position}));
 		}
 #endif
 	}

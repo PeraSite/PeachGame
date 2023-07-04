@@ -15,8 +15,9 @@ namespace PeachGame.Client {
 
 		[Header("네트워킹 관련")]
 		[SerializeField] private string _devHost = "127.0.0.1";
-		[SerializeField] private string _host = "peachgame.jeongjehoon.kro.kr";
+		[SerializeField] private string _host = "peachgameserver.jeongjehoon.kro.kr";
 		[SerializeField] private int _port = 9000;
+		private bool _isDebug;
 
 		// 네트워킹 객체
 		private TcpClient _client;
@@ -56,6 +57,8 @@ namespace PeachGame.Client {
 			Nickname = string.Empty;
 			ClientId = Guid.Empty;
 			CurrentRoomId = -1;
+
+			_isDebug = Debug.isDebugBuild;
 		}
 
 		private void OnDestroy() {
@@ -118,7 +121,7 @@ namespace PeachGame.Client {
 				return;
 			}
 
-			var host = Application.isEditor ? _devHost : _host;
+			var host = _isDebug ? _devHost : _host;
 			await _client.ConnectAsync(host, _port);
 			_stream = _client.GetStream();
 			_writer = new BinaryWriter(_stream);

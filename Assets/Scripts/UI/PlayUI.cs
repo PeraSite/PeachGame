@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using PeachGame.Client.Behaviour;
 using PeachGame.Client.UI.Elements;
 using PeachGame.Client.Utils;
 using PeachGame.Common.Models;
+using PeachGame.Common.Packets.Client;
 using PeachGame.Common.Packets.Server;
 using TMPro;
 using UnityEngine;
@@ -13,7 +15,8 @@ using UnityEngine.UI;
 
 namespace PeachGame.Client.UI {
 	public class PlayUI : MonoBehaviour,
-		IPacketHandler<ServerRoomStatePacket> {
+		IPacketHandler<ServerRoomStatePacket>,
+		IPacketHandler<ClientSelectRangePacket> {
 		private const int PLAY_TIME = 60 * 2; // 2분
 
 		[Header("남은 시간")]
@@ -28,6 +31,11 @@ namespace PeachGame.Client.UI {
 		[SerializeField] private float _elementSpacing = 30f;
 		[SerializeField] private float _rankAnimationTime = 0.5f;
 
+		[Header("리플리케이션")]
+		[SerializeField] private ReplicatedPeachSelector _replicatedSelectorPrefab;
+		[SerializeField] private Transform _replicatedSelectorParent;
+		private Dictionary<Guid, ReplicatedPeachSelector> _replicatedSelectors;
+
 		[Header("패널")]
 		[SerializeField] private GameObject _playPanel;
 		[SerializeField] private GameObject _endingPanel;
@@ -38,17 +46,21 @@ namespace PeachGame.Client.UI {
 
 		private void Awake() {
 			_rankElements = new Dictionary<Guid, RankElement>();
+			_replicatedSelectors = new Dictionary<Guid, ReplicatedPeachSelector>();
+
 			_playPanel.SetActive(true);
 			_endingPanel.SetActive(false);
 			_leftTimeBar.fillAmount = 1.0f;
 		}
 
 		private void OnEnable() {
-			this.RegisterPacketHandler();
+			this.RegisterPacketHandler<ServerRoomStatePacket>();
+			this.RegisterPacketHandler<ClientSelectRangePacket>();
 		}
 
 		private void OnDisable() {
-			this.UnregisterPacketHandler();
+			this.UnregisterPacketHandler<ServerRoomStatePacket>();
+			this.UnregisterPacketHandler<ClientSelectRangePacket>();
 		}
 
 		public void Handle(ServerRoomStatePacket packet) {
@@ -65,8 +77,43 @@ namespace PeachGame.Client.UI {
 
 			// 랭킹 업데이트 로직
 			UpdateRankUI(roomInfo);
+
+			// 리플리케이션 업데이트 로직
+			UpdateSelectorUI(roomInfo);
 		}
 
+#region 선택 박스 UI
+		private void UpdateSelectorUI(RoomInfo roomInfo) {
+			// 만약 유저가 나가서 UI랑 플레이어-1(본인 제외)랑 다르다면 리빌딩
+			if (roomInfo.Players.Count != _replicatedSelectors.Count) {
+				RebuildSelectorUI(roomInfo);
+				return;
+			}
+		}
+
+		private void RebuildSelectorUI(RoomInfo roomInfo) {
+			// 기존 프리팹 초기화
+			foreach (var selector in _replicatedSelectors.Values) {
+				Destroy(selector.gameObject);
+			}
+			_replicatedSelectors.Clear();
+
+			// 자신을 제외한 캐릭터만 생성
+			foreach (PlayerInfo player in roomInfo.Players /*.Where(x => x.Id != NetworkManager.Instance.ClientId)*/) {
+				// 프리팹 생성
+				var element = Instantiate(_replicatedSelectorPrefab, _replicatedSelectorParent);
+				_replicatedSelectors[player.Id] = element;
+			}
+		}
+
+		public void Handle(ClientSelectRangePacket packet) {
+			if (_replicatedSelectors.TryGetValue(packet.ClientId, out var selector)) {
+				selector.SetState(packet.MinX, packet.MaxX, packet.MinY, packet.MaxY, packet.Dragging);
+			}
+		}
+#endregion
+
+#region 랭킹 UI
 		private void UpdateRankUI(RoomInfo roomInfo) {
 			// 한번도 UI를 만들지 않았다면 리빌딩
 			if (_rankElements.Count == 0) {
@@ -111,7 +158,7 @@ namespace PeachGame.Client.UI {
 		private void RebuildRankUI(RoomInfo roomInfo) {
 			// 기존 프리팹 초기화
 			foreach (RankElement element in _rankElements.Values) {
-				element.DOKill();
+				element.transform.DOKill();
 				Destroy(element.gameObject);
 			}
 			_rankElements.Clear();
@@ -140,6 +187,7 @@ namespace PeachGame.Client.UI {
 				_rankElements[player.Id] = element;
 			}
 		}
+  #endregion
 
 		private void ShowEnding(RoomInfo roomInfo) {
 			_playPanel.SetActive(false);
