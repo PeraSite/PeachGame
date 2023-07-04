@@ -20,15 +20,16 @@ namespace PeachGame.Client.UI {
 		[SerializeField] private RectTransform _roomListParent;
 		[SerializeField] private float _autoRefreshTime = 1f;
 
-
 		[Header("닉네임 설정")]
 		[SerializeField] private TMP_InputField _nicknameInput;
 
 		[Header("방 생성")]
 		[SerializeField] private TMP_InputField _roomNameInput;
+		[SerializeField] private GameObject _createRoomPanel;
 
 		private void Awake() {
 			_roomListElements = new List<RoomListElement>();
+			CloseCreateRoomPanel();
 		}
 
 		private void Start() {
@@ -96,6 +97,14 @@ namespace PeachGame.Client.UI {
 #endregion
 
 #region 방 생성
+		public void OpenCreateRoomPanel() {
+			_createRoomPanel.SetActive(true);
+		}
+
+		public void CloseCreateRoomPanel() {
+			_createRoomPanel.SetActive(false);
+		}
+
 		public void CreateRoom() {
 			var roomName = _roomNameInput.text;
 
