@@ -127,9 +127,7 @@ namespace PeachGame.Client {
 			_writer = new BinaryWriter(_stream);
 			_reader = new BinaryReader(_stream);
 
-			ClientId = Guid.NewGuid();
-
-			SendPacket(new ClientPingPacket(ClientId, nickname));
+			SendPacket(new ClientPingPacket(nickname));
 
 			while (_client.Connected) {
 				try {

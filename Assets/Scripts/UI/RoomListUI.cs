@@ -64,7 +64,7 @@ namespace PeachGame.Client.UI {
 
 			// 새로운 닉네임으로 값 업데이트 후 패킷 전송
 			NetworkManager.Instance.Nickname = newNickname;
-			NetworkManager.Instance.SendPacket(new ClientPingPacket(NetworkManager.Instance.ClientId, newNickname));
+			NetworkManager.Instance.SendPacket(new ClientPingPacket(newNickname));
 		}
 #endregion
 
